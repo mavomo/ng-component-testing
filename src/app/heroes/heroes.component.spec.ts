@@ -4,6 +4,7 @@ import {Component, Input} from '@angular/core';
 import {HeroService} from '../hero.service';
 import {of} from 'rxjs';
 import {Hero} from '../hero';
+import {By} from '@angular/platform-browser';
 
 describe('Heroes component should', () => {
 
@@ -46,6 +47,15 @@ describe('Heroes component should', () => {
     heroServiceMock.getHeroes.and.returnValues(of(HEROES));
     fixture.detectChanges();
     expect(heroesComponent.heroes).toEqual(HEROES, 'heroes should be set in the component');
+  });
+
+  it('bind the heroes to the DOM as an ordered list', () => {
+    heroServiceMock.getHeroes.and.returnValues(of(HEROES));
+    fixture.detectChanges();
+
+    const liTag = fixture.debugElement.queryAll(By.css('li'));
+
+    expect(liTag.length).toEqual(3, 'number of heroes should be 3');
   });
 
 });
