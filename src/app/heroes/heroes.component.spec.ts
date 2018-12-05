@@ -102,7 +102,7 @@ describe('Heroes component should', () => {
       heroServiceMock.getHeroes.and.returnValues(of(HEROES));
       fixture.detectChanges();
 
-      const newHero = {id: 5, name: "Mme Ice", strength: 2};
+      const newHero = {id: 5, name: 'Mme Ice', strength: 2};
       heroServiceMock.addHero.and.returnValue(of(newHero));
 
       const inputElt = fixture.debugElement.query(By.css('input')).nativeElement;
@@ -115,8 +115,5 @@ describe('Heroes component should', () => {
       const heroesText = fixture.debugElement.query(By.css('ul')).nativeElement.textContent;
       expect(heroesText).toContain('Mme Ice', ' should be the new hero');
     });
-
-
-
   });
 });
