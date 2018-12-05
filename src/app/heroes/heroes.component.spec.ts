@@ -89,26 +89,34 @@ describe('Heroes component should', () => {
 
     it(` calls heroService.deleteHero when the hero component's delete btn is clicked`, () => {
       spyOn(fixture.componentInstance, 'delete');
-
       heroServiceMock.getHeroes.and.returnValues(of(HEROES));
 
       fixture.detectChanges();
 
       const heroComponentDEs = fixture.debugElement.queryAll((By.directive(HeroComponent)));
-
-      clickHeroAction(heroComponentDEs[0]);
-
+      heroComponentDEs[0].triggerEventHandler('delete', null);
       expect(fixture.componentInstance.delete).toHaveBeenCalledWith(Object(HEROES[0]));
     });
+
+    it(' add a new hero to the hero list when the add button is clicked', () => {
+      heroServiceMock.getHeroes.and.returnValues(of(HEROES));
+      fixture.detectChanges();
+
+      const newHero = {id: 5, name: "Mme Ice", strength: 2};
+      heroServiceMock.addHero.and.returnValue(of(newHero));
+
+      const inputElt = fixture.debugElement.query(By.css('input')).nativeElement;
+      const addButton = fixture.debugElement.queryAll(By.css('button'))[0];
+
+      inputElt.value = newHero.name;
+      addButton.triggerEventHandler('click', null);
+      fixture.detectChanges();
+
+      const heroesText = fixture.debugElement.query(By.css('ul')).nativeElement.textContent;
+      expect(heroesText).toContain('Mme Ice', ' should be the new hero');
+    });
+
+
+
   });
-
-
-  function clickHeroAction(debugElement) {
-    debugElement.query(By.css('button')).triggerEventHandler('click',
-      {
-        stopPropagation: () => {
-        }
-      });
-  }
-
 });
