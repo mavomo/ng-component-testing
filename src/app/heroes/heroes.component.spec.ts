@@ -68,11 +68,11 @@ describe('Heroes component should', () => {
         providers: [
           {provide: HeroService, useValue: heroServiceMock}
         ],
-        schemas:[NO_ERRORS_SCHEMA]
+        schemas: [NO_ERRORS_SCHEMA]
       });
       fixture = TestBed.createComponent(HeroesComponent);
       heroesComponent = fixture.componentInstance;
-      });
+    });
 
     it('render each hero as HeroComponent', () => {
       heroServiceMock.getHeroes.and.returnValues(of(HEROES));
@@ -81,8 +81,34 @@ describe('Heroes component should', () => {
 
       const heroComponentDEs = fixture.debugElement.queryAll((By.directive(HeroComponent)));
 
-      expect(heroComponentDEs.length).toBe(3, 'should containt 3 li nodes');
+      expect(heroComponentDEs.length).toBe(3, 'should contain 3 li nodes');
+      for (let i = 0; i < heroComponentDEs.length; i++) {
+        expect(heroComponentDEs[i].componentInstance.hero.name).toBe(HEROES[i].name, 'should return the name of the first hero');
+      }
+    });
+
+    it(` calls heroService.deleteHero when the hero component's delete btn is clicked`, () => {
+      spyOn(fixture.componentInstance, 'delete');
+
+      heroServiceMock.getHeroes.and.returnValues(of(HEROES));
+
+      fixture.detectChanges();
+
+      const heroComponentDEs = fixture.debugElement.queryAll((By.directive(HeroComponent)));
+
+      clickHeroAction(heroComponentDEs[0]);
+
+      expect(fixture.componentInstance.delete).toHaveBeenCalledWith(Object(HEROES[0]));
     });
   });
+
+
+  function clickHeroAction(debugElement) {
+    debugElement.query(By.css('button')).triggerEventHandler('click',
+      {
+        stopPropagation: () => {
+        }
+      });
+  }
 
 });
